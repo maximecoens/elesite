@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elena</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #43e97b 100%);
+            position: relative;
+            transition: background 0.5s ease;
+        }
+
+        body.danger-mode {
+            background: linear-gradient(135deg, #ff0844 0%, #ff5858 50%, #ff0844 100%);
+            animation: dangerPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes dangerPulse {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.2);
+            }
+        }
+
+        /* Floating hearts background animation */
+        .floating-heart {
+            position: absolute;
+            font-size: clamp(20px, 3vw, 40px);
+            opacity: 0.5;
+            animation: float 15s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            padding: 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .emoji {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin: 20px 0;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .button-container {
+            position: relative;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            min-height: 150px;
+        }
+
+        button {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            padding: clamp(15px, 3vw, 20px) clamp(30px, 5vw, 50px);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            position: relative;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(67, 233, 123, 0.5);
+        }
+
+        #yesBtn:active {
+            transform: scale(1.05);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #2d3436;
+            position: relative;
+            touch-action: none;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: clamp(30px, 5vw, 50px);
+            border-radius: 30px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 1000;
+            max-width: 90vw;
+        }
+
+        .success-message h2 {
+            color: #00b894;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 20px;
+        }
+
+        .success-message p {
+            color: #2d3436;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            line-height: 1.6;
+        }
+
+        .success-message img, .success-message iframe {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 15px;
+        }
+
+        .meme-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .meme-container img {
+            max-width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Danger screen styles */
+        .danger-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: clamp(30px, 5vw, 50px);
+            border-radius: 30px;
+            box-shadow: 0 10px 50px rgba(255, 0, 0, 0.5);
+            text-align: center;
+            z-index: 1000;
+            max-width: 90vw;
+            border: 5px solid #ff0844;
+        }
+
+        .danger-message h2 {
+            color: #ff0844;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 20px;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .danger-message p {
+            color: white;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 30px;
+        }
+
+        .danger-message button {
+            font-size: clamp(2rem, 4vw, 3rem);
+            padding: clamp(20px, 4vw, 30px) clamp(50px, 8vw, 80px);
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 8px 30px rgba(67, 233, 123, 0.5);
+            animation: giantPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes giantPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        @media (max-width: 768px) {
+            .button-container {
+                flex-direction: column;
+                gap: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div id="floatingHearts"></div>
+
+    <div class="container">
+        <h1>Chappoooo, wil je men Valentijn zijn? <span aria-hidden="true">💕</span></h1>
+        <div class="emoji" aria-hidden="true">😊</div>
+        
+        <div class="button-container" id="buttonContainer">
+            <button id="yesBtn">Yes! <span aria-hidden="true">😄</span></button>
+            <button id="noBtn" tabindex="-1" aria-label="No button that moves away">No</button>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage" role="alert" aria-live="polite">
+        <h2>Nu zit ge vast aan mij! <span aria-hidden="true">😎</span></h2>
+        <div class="meme-container">
+            <iframe src="ufc.gif" width="480" height="267" class="giphy-embed" allowFullScreen></iframe>
+            <img src="sucess.png" alt="Success Kid">
+        </div>
+        <p>Lov ya<span aria-hidden="true">✨</span></p>
+    </div>
+
+    <div class="danger-message" id="dangerMessage">
+        <h2>ZIJT GE FUCKING SERIEUSS?! <span aria-hidden="true">😱</span></h2>
+        <p>Er is maar 1 juist antwoord hier...</p>
+        <button id="forcedYesBtn">YES!</button>
+    </div>
+
+    <script>
+        // Create floating hearts in background
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            const emojis = ['❤️', '💕', '😊', '🎉', '✨'];
+            const floatingEmojiCount = 6;  // Reduced from 15 for subtlety
+            
+            for (let i = 0; i < floatingEmojiCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        createFloatingHearts();
+
+        // No button movement
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const buttonContainer = document.getElementById('buttonContainer');
+        const successMessage = document.getElementById('successMessage');
+        const dangerMessage = document.getElementById('dangerMessage');
+        const forcedYesBtn = document.getElementById('forcedYesBtn');
+
+        let noClickAttempts = 0;
+        const maxAttempts = 3;  // After 3 attempts, show danger screen
+        const positionMultiplier = 1.8;  // Controls how far button can jump (1.8 = 90% of container)
+
+        // Function to move No button to random position
+        function moveNoButtonToRandomPosition() {
+            // Switch to absolute positioning on first click
+            if (noBtn.style.position !== 'absolute') {
+                noBtn.style.position = 'absolute';
+                noBtn.style.left = '50%';
+                noBtn.style.top = '50%';
+                noBtn.style.transform = '';  // Reset transform before applying new positioning
+            }
+            
+            const containerRect = buttonContainer.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            // Calculate safe boundaries
+            const maxX = (containerRect.width - btnRect.width) / 2;
+            const maxY = (containerRect.height - btnRect.height) / 2;
+            
+            // Generate random position within boundaries
+            const randomX = (Math.random() - 0.5) * maxX * positionMultiplier;
+            const randomY = (Math.random() - 0.5) * maxY * positionMultiplier;
+            
+            // Apply position with animation
+            noBtn.style.transition = 'transform 0.3s ease';
+            noBtn.style.transform = `translate(calc(-50% + ${randomX}px), calc(-50% + ${randomY}px))`;
+        }
+
+        // Click handler for No button
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            noClickAttempts++;
+            
+            if (noClickAttempts >= maxAttempts) {
+                showDangerScreen();
+            } else {
+                moveNoButtonToRandomPosition();
+            }
+        });
+
+        // Show danger screen
+        function showDangerScreen() {
+            buttonContainer.style.display = 'none';
+            document.querySelector('.container h1').style.display = 'none';
+            document.querySelector('.emoji').style.display = 'none';
+            document.body.classList.add('danger-mode');
+            dangerMessage.style.display = 'block';
+        }
+
+        // Forced Yes button leads to success
+        forcedYesBtn.addEventListener('click', () => {
+            showSuccess();
+        });
+
+        // Yes button celebration
+        yesBtn.addEventListener('click', () => {
+            showSuccess();
+        });
+
+        function showSuccess() {
+            // Hide everything else
+            buttonContainer.style.display = 'none';
+            dangerMessage.style.display = 'none';
+            document.querySelector('.container h1').style.display = 'none';
+            document.querySelector('.emoji').style.display = 'none';
+            document.body.classList.remove('danger-mode');
+
+            // Show success message
+            successMessage.style.display = 'block';
+
+            // Start celebrations
+            createHeartParticles();
+            createFireworks();
+        }
+
+        // Heart particles shooting upward
+        function createHeartParticles() {
+            const celebrationEmojis = ['❤️', '💕', '🎉', '✨', '😄', '🎊', '💖'];
+            
+            function shootHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'particle';
+                heart.textContent = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
+                heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.bottom = '-50px';
+                document.body.appendChild(heart);
+
+                const duration = 2000 + Math.random() * 1000;
+                const drift = (Math.random() - 0.5) * 200;
+                const startTime = Date.now();
+
+                function animateHeart() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = elapsed / duration;
+
+                    if (progress < 1) {
+                        const y = progress * (window.innerHeight + 100);
+                        const x = drift * Math.sin(progress * Math.PI * 2);
+                        heart.style.transform = `translate(${x}px, -${y}px) rotate(${progress * 360}deg)`;
+                        heart.style.opacity = 1 - progress;
+                        requestAnimationFrame(animateHeart);
+                    } else {
+                        heart.remove();
+                    }
+                }
+
+                animateHeart();
+            }
+
+            // Shoot hearts continuously for 5 seconds
+            const heartInterval = setInterval(shootHeart, 100);
+            setTimeout(() => clearInterval(heartInterval), 5000);
+        }
+
+        // Fireworks explosions
+        function createFireworks() {
+            function createExplosion(x, y) {
+                const colors = ['#43e97b', '#38f9d7', '#4facfe', '#00f2fe', '#feca57', '#ff6b6b'];
+                const particleCount = 30;
+
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.width = '8px';
+                    particle.style.height = '8px';
+                    particle.style.borderRadius = '50%';
+                    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    document.body.appendChild(particle);
+
+                    const angle = (Math.PI * 2 * i) / particleCount;
+                    const velocity = 2 + Math.random() * 3;
+                    const vx = Math.cos(angle) * velocity;
+                    const vy = Math.sin(angle) * velocity;
+                    const duration = 1000 + Math.random() * 500;
+                    const startTime = Date.now();
+
+                    function animateParticle() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = elapsed / duration;
+
+                        if (progress < 1) {
+                            const currentX = x + vx * elapsed * 0.2;
+                            const currentY = y + vy * elapsed * 0.2 + progress * progress * 200;
+                            particle.style.left = currentX + 'px';
+                            particle.style.top = currentY + 'px';
+                            particle.style.opacity = 1 - progress;
+                            requestAnimationFrame(animateParticle);
+                        } else {
+                            particle.remove();
+                        }
+                    }
+
+                    animateParticle();
+                }
+            }
+
+            function randomFirework() {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight * 0.6;
+                createExplosion(x, y);
+            }
+
+            // Create fireworks for 5 seconds
+            const fireworkInterval = setInterval(randomFirework, 300);
+            setTimeout(() => clearInterval(fireworkInterval), 5000);
+        }
+    </script>
+</body>
+</html>
