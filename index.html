@@ -143,10 +143,7 @@
         #noBtn {
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
             color: #2d3436;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
             touch-action: none;
         }
 
@@ -333,6 +330,13 @@
 
         // Function to move No button to random position
         function moveNoButtonToRandomPosition() {
+            // Switch to absolute positioning on first click
+            if (noBtn.style.position !== 'absolute') {
+                noBtn.style.position = 'absolute';
+                noBtn.style.left = '50%';
+                noBtn.style.top = '50%';
+            }
+            
             const containerRect = buttonContainer.getBoundingClientRect();
             const btnRect = noBtn.getBoundingClientRect();
             
