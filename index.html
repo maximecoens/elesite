@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine? 💕</title>
+    <title>Be My Valentine?</title>
     <style>
         * {
             margin: 0;
@@ -181,18 +181,18 @@
     <div id="floatingHearts"></div>
 
     <div class="container">
-        <h1>Will you be my Valentine? 💖</h1>
-        <div class="emoji">🌹</div>
+        <h1>Will you be my Valentine? <span aria-hidden="true">💖</span></h1>
+        <div class="emoji" aria-hidden="true">🌹</div>
         
         <div class="button-container" id="buttonContainer">
-            <button id="yesBtn">Yes! 💕</button>
-            <button id="noBtn">No</button>
+            <button id="yesBtn">Yes! <span aria-hidden="true">💕</span></button>
+            <button id="noBtn" tabindex="-1" aria-label="No button that moves away">No</button>
         </div>
     </div>
 
-    <div class="success-message" id="successMessage">
-        <h2>Yay! I knew it! 💕</h2>
-        <p>You've made me the happiest person! 🥰<br>Happy Valentine's Day! 💖✨</p>
+    <div class="success-message" id="successMessage" role="alert" aria-live="polite">
+        <h2>Yay! I knew it! <span aria-hidden="true">💕</span></h2>
+        <p>You've made me the happiest person! <span aria-hidden="true">🥰</span><br>Happy Valentine's Day! <span aria-hidden="true">💖✨</span></p>
     </div>
 
     <script>
@@ -301,8 +301,17 @@
 
         // Touch move handler for mobile
         document.addEventListener('touchmove', (e) => {
-            e.preventDefault();
             const touch = e.touches[0];
+            const btnRect = noBtn.getBoundingClientRect();
+            const distance = Math.sqrt(
+                Math.pow(btnRect.left + btnRect.width / 2 - touch.clientX, 2) +
+                Math.pow(btnRect.top + btnRect.height / 2 - touch.clientY, 2)
+            );
+            
+            // Only prevent default if near the button
+            if (distance < repulsionRadius * 2) {
+                e.preventDefault();
+            }
             calculateRepulsion(touch.clientX, touch.clientY);
         }, { passive: false });
 
