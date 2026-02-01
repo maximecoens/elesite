@@ -287,7 +287,7 @@
     <div class="success-message" id="successMessage" role="alert" aria-live="polite">
         <h2>You're stuck with me now! <span aria-hidden="true">😎</span></h2>
         <div class="meme-container">
-            <iframe src="https://giphy.com/embed/nXxOjZrbnbRxS" width="480" height="267" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+            <iframe src="https://giphy.com/embed/nXxOjZrbnbRxS" width="480" height="267" class="giphy-embed" allowFullScreen></iframe>
             <img src="https://i.imgflip.com/1bij.jpg" alt="Success Kid">
         </div>
         <p>Happy Valentine's Day Elena! <span aria-hidden="true">💖✨</span></p>
@@ -304,8 +304,9 @@
         function createFloatingHearts() {
             const container = document.getElementById('floatingHearts');
             const emojis = ['❤️', '💕', '😊', '🎉', '✨'];
+            const floatingEmojiCount = 6;  // Reduced from 15 for subtlety
             
-            for (let i = 0; i < 6; i++) {  // Reduced from 15 to 6
+            for (let i = 0; i < floatingEmojiCount; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'floating-heart';
                 heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
@@ -332,7 +333,7 @@
         const repulsionForce = 150;
         const repulsionRadius = 150;
         let noClickAttempts = 0;
-        const maxAttempts = 5;  // After 5 attempts, allow clicking
+        const maxAttempts = 5;  // After 5 attempts, show danger screen
 
         // Initialize button position
         function initNoBtnPosition() {
