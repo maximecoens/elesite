@@ -329,6 +329,7 @@
 
         let noClickAttempts = 0;
         const maxAttempts = 3;  // After 3 attempts, show danger screen
+        const positionMultiplier = 1.8;  // Controls how far button can jump (1.8 = 90% of container)
 
         // Function to move No button to random position
         function moveNoButtonToRandomPosition() {
@@ -339,9 +340,9 @@
             const maxX = (containerRect.width - btnRect.width) / 2;
             const maxY = (containerRect.height - btnRect.height) / 2;
             
-            // Generate random position
-            const randomX = (Math.random() - 0.5) * maxX * 1.8;
-            const randomY = (Math.random() - 0.5) * maxY * 1.8;
+            // Generate random position within boundaries
+            const randomX = (Math.random() - 0.5) * maxX * positionMultiplier;
+            const randomY = (Math.random() - 0.5) * maxY * positionMultiplier;
             
             // Apply position with animation
             noBtn.style.transition = 'transform 0.3s ease';
@@ -358,14 +359,6 @@
             } else {
                 moveNoButtonToRandomPosition();
             }
-        });
-
-        noBtn.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-        });
-
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
         });
 
         // Show danger screen
