@@ -319,7 +319,7 @@
 
         createFloatingHearts();
 
-        // Physics-based "No" button movement
+        // No button movement
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const buttonContainer = document.getElementById('buttonContainer');
@@ -327,126 +327,45 @@
         const dangerMessage = document.getElementById('dangerMessage');
         const forcedYesBtn = document.getElementById('forcedYesBtn');
 
-        let noBtnPosition = { x: 0, y: 0 };
-        let noBtnVelocity = { x: 0, y: 0 };
-        const friction = 0.92;
-        const repulsionForce = 150;
-        const repulsionRadius = 150;
         let noClickAttempts = 0;
-        const maxAttempts = 5;  // After 5 attempts, show danger screen
+        const maxAttempts = 3;  // After 3 attempts, show danger screen
 
-        // Initialize button position
-        function initNoBtnPosition() {
-            const rect = buttonContainer.getBoundingClientRect();
-            noBtnPosition.x = 0;
-            noBtnPosition.y = 0;
-            updateNoBtnPosition();
-        }
-
-        initNoBtnPosition();
-
-        // Update button position
-        function updateNoBtnPosition() {
-            noBtn.style.left = '50%';
-            noBtn.style.top = '50%';
-            noBtn.style.transform = `translate(calc(-50% + ${noBtnPosition.x}px), calc(-50% + ${noBtnPosition.y}px))`;
-        }
-
-        // Calculate repulsion force
-        function calculateRepulsion(pointerX, pointerY) {
-            const btnRect = noBtn.getBoundingClientRect();
-            const btnCenterX = btnRect.left + btnRect.width / 2;
-            const btnCenterY = btnRect.top + btnRect.height / 2;
-
-            const dx = btnCenterX - pointerX;
-            const dy = btnCenterY - pointerY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < repulsionRadius && distance > 0) {
-                const force = (repulsionRadius - distance) / repulsionRadius * repulsionForce;
-                const angle = Math.atan2(dy, dx);
-                
-                noBtnVelocity.x += Math.cos(angle) * force * 0.1;
-                noBtnVelocity.y += Math.sin(angle) * force * 0.1;
-            }
-        }
-
-        // Physics update loop
-        function updatePhysics() {
-            // Apply friction
-            noBtnVelocity.x *= friction;
-            noBtnVelocity.y *= friction;
-
-            // Update position
-            noBtnPosition.x += noBtnVelocity.x;
-            noBtnPosition.y += noBtnVelocity.y;
-
-            // Boundary collision detection
+        // Function to move No button to random position
+        function moveNoButtonToRandomPosition() {
             const containerRect = buttonContainer.getBoundingClientRect();
             const btnRect = noBtn.getBoundingClientRect();
-            const maxX = containerRect.width / 2 - btnRect.width / 2;
-            const maxY = containerRect.height / 2 - btnRect.height / 2;
-
-            if (Math.abs(noBtnPosition.x) > maxX) {
-                noBtnPosition.x = Math.sign(noBtnPosition.x) * maxX;
-                noBtnVelocity.x *= -0.5; // Bounce with energy loss
-            }
-
-            if (Math.abs(noBtnPosition.y) > maxY) {
-                noBtnPosition.y = Math.sign(noBtnPosition.y) * maxY;
-                noBtnVelocity.y *= -0.5; // Bounce with energy loss
-            }
-
-            updateNoBtnPosition();
-            requestAnimationFrame(updatePhysics);
+            
+            // Calculate safe boundaries
+            const maxX = (containerRect.width - btnRect.width) / 2;
+            const maxY = (containerRect.height - btnRect.height) / 2;
+            
+            // Generate random position
+            const randomX = (Math.random() - 0.5) * maxX * 1.8;
+            const randomY = (Math.random() - 0.5) * maxY * 1.8;
+            
+            // Apply position with animation
+            noBtn.style.transition = 'transform 0.3s ease';
+            noBtn.style.transform = `translate(calc(-50% + ${randomX}px), calc(-50% + ${randomY}px))`;
         }
 
-        updatePhysics();
-
-        // Mouse move handler
-        document.addEventListener('mousemove', (e) => {
-            calculateRepulsion(e.clientX, e.clientY);
-        });
-
-        // Touch move handler for mobile
-        document.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            const btnRect = noBtn.getBoundingClientRect();
-            const distance = Math.sqrt(
-                Math.pow(btnRect.left + btnRect.width / 2 - touch.clientX, 2) +
-                Math.pow(btnRect.top + btnRect.height / 2 - touch.clientY, 2)
-            );
-            
-            // Only prevent default if near the button
-            if (distance < repulsionRadius * 2) {
-                e.preventDefault();
-            }
-            calculateRepulsion(touch.clientX, touch.clientY);
-        }, { passive: false });
-
-        // Prevent clicking the No button (but track attempts)
+        // Click handler for No button
         noBtn.addEventListener('click', (e) => {
             e.preventDefault();
             noClickAttempts++;
+            
             if (noClickAttempts >= maxAttempts) {
                 showDangerScreen();
+            } else {
+                moveNoButtonToRandomPosition();
             }
         });
 
         noBtn.addEventListener('mousedown', (e) => {
             e.preventDefault();
-            noClickAttempts++;
-            if (noClickAttempts >= maxAttempts) {
-                showDangerScreen();
-            }
         });
 
         noBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            noClickAttempts++;
-            if (noClickAttempts >= maxAttempts) {
-                showDangerScreen();
-            }
         });
 
         // Show danger screen
@@ -578,11 +497,6 @@
             const fireworkInterval = setInterval(randomFirework, 300);
             setTimeout(() => clearInterval(fireworkInterval), 5000);
         }
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            initNoBtnPosition();
-        });
     </script>
 </body>
 </html>
